@@ -1,0 +1,199 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to top */
+    min-height: 100vh;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 900px; /* Adjust as needed */
+}
+
+h1, h2, h3 {
+    text-align: center;
+    color: #333;
+}
+
+.calendar-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.calendar-controls button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.calendar-controls button:hover {
+    background-color: #0056b3;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px; /* Gap between cells */
+}
+
+.day-name, .day-cell {
+    padding: 10px 5px; /* Reduced padding for smaller cells */
+    text-align: center;
+    border: 1px solid #ddd;
+    min-height: 70px; /* Ensure cells have some height */
+    font-size: 0.8em; /* Smaller font for day numbers */
+    position: relative;
+    overflow: hidden; /* Hide overflowing event text */
+}
+
+.day-name {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.day-cell {
+    cursor: pointer;
+    background-color: #fff; /* Default for Dias Letivos */
+    transition: background-color 0.3s;
+}
+
+.day-cell:hover {
+    background-color: #e9e9e9;
+}
+
+.day-cell.empty {
+    background-color: #f9f9f9;
+    cursor: default;
+}
+
+.day-cell .day-number {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 3px;
+}
+
+.day-cell .event-marker {
+    font-size: 0.7em;
+    padding: 1px 3px;
+    border-radius: 3px;
+    margin-top: 2px;
+    display: block; /* Make markers take full width for stacking */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Add ... if text is too long */
+}
+
+
+/* Event Type Colors from Legend */
+.day-cell.holiday, .event-marker.holiday {
+    background-color: #ffcccc; /* Light Red */
+    color: #a30000;
+}
+.day-cell.recess, .event-marker.recess {
+    background-color: #e6ccff; /* Light Purple */
+    color: #5c0099;
+}
+.day-cell.pedagogical, .event-marker.pedagogical {
+    background-color: #ccffcc; /* Light Green */
+    color: #006400;
+}
+.day-cell.vacation, .event-marker.vacation {
+    background-color: #ffffcc; /* Light Yellow */
+    color: #666600;
+}
+.day-cell.special, .event-marker.special {
+    background-color: #cce7ff; /* Light Blue for other special events */
+    color: #004080;
+}
+.day-cell.user-event, .event-marker.user-event {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-left: 3px solid #0c5460;
+}
+
+
+.day-cell.today .day-number {
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    display: inline-block;
+    padding: 2px;
+}
+
+.day-cell.selected {
+    border: 2px solid #007bff;
+    background-color: #e0efff;
+}
+
+.event-details-section, .add-event-section {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    border: 1px solid #eee;
+}
+
+.event-details-section h3, .add-event-section h3 {
+    margin-top: 0;
+}
+
+#eventList {
+    list-style: none;
+    padding: 0;
+}
+
+#eventList li {
+    padding: 8px;
+    border-bottom: 1px dashed #ddd;
+}
+#eventList li:last-child {
+    border-bottom: none;
+}
+
+.add-event-section label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.add-event-section input[type="date"],
+.add-event-section input[type="text"],
+.add-event-section select {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.add-event-section button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-event-section button:hover {
+    background-color: #218838;
+}

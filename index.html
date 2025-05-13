@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendário Escolar Interativo 2025</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Calendário Escolar - 2025</h1>
+        <div class="calendar-controls">
+            <button id="prevMonth">◄ Mês Anterior</button>
+            <h2 id="monthYear">Janeiro 2025</h2>
+            <button id="nextMonth">Próximo Mês ►</button>
+        </div>
+        <div class="calendar-grid">
+            <div class="day-name">Dom</div>
+            <div class="day-name">Seg</div>
+            <div class="day-name">Ter</div>
+            <div class="day-name">Qua</div>
+            <div class="day-name">Qui</div>
+            <div class="day-name">Sex</div>
+            <div class="day-name">Sáb</div>
+        </div>
+        <div id="calendarDays" class="calendar-grid">
+            <!-- Days will be populated by JavaScript -->
+        </div>
+
+        <div class="event-details-section">
+            <h3>Eventos para <span id="selectedDateDisplay">-</span></h3>
+            <ul id="eventList">
+                <li>Nenhum evento para este dia.</li>
+            </ul>
+        </div>
+
+        <div class="add-event-section">
+            <h3>Adicionar Novo Evento</h3>
+            <label for="eventDate">Data:</label>
+            <input type="date" id="eventDate" name="eventDate" required>
+            <label for="eventDescription">Descrição:</label>
+            <input type="text" id="eventDescription" name="eventDescription" placeholder="Descrição do evento" required>
+            <label for="eventType">Tipo (opcional, para cor):</label>
+            <select id="eventType">
+                <option value="default">Padrão (Letivo)</option>
+                <option value="holiday">Feriado (Vermelho)</option>
+                <option value="recess">Recesso (Roxo)</option>
+                <option value="pedagogical">Pedagógico (Verde)</option>
+                <option value="vacation">Férias (Amarelo)</option>
+                <option value="special">Especial (Outro)</option>
+            </select>
+            <button id="addEventButton">Adicionar Evento</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
