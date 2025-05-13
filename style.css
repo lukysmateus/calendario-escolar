@@ -197,3 +197,40 @@ h1, h2, h3 {
 .add-event-section button:hover {
     background-color: #218838;
 }
+/* Estilos para os botões de editar/excluir na lista de eventos */
+#eventList li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Permite que os botões quebrem a linha em telas menores */
+}
+
+#eventList li > span { /* O texto do evento */
+    flex-grow: 1; /* Faz o texto ocupar o espaço disponível */
+    margin-right: 10px; /* Espaço antes dos botões */
+}
+
+#eventList .event-actions button {
+    margin-left: 5px;
+    padding: 4px 8px;
+    font-size: 0.8em;
+    cursor: pointer;
+    border: none;
+    border-radius: 3px;
+}
+
+.edit-btn {
+    background-color: #ffc107; /* Amarelo */
+    color: #212529;
+}
+
+.delete-btn {
+    background-color: #dc3545; /* Vermelho */
+    color: white;
+}
+
+/* Estilo para quando o campo de data está desabilitado durante a edição */
+#eventDate:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
