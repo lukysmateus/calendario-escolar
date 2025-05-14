@@ -144,17 +144,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const storedEvents = localStorage.getItem('calendarEvents2025');
     if (storedEvents) {
-        const userAddedEvents = JSON.parse(storedEvents).map(se => { // Use map para garantir ID
-            if (!se.id) { // Atribui ID se não existir (para compatibilidade com storage antigo)
+        const userAddedEvents = JSON.parse(storedEvents).map(se => {
+            if (!se.id) {
                 se.id = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
             }
             return se;
-        }).filter(se => // Filtra para não adicionar duplicatas exatas dos predefinidos com ID
+        }).filter(se =>
             !events.some(ie => ie.id === se.id)
         );
         events = events.concat(userAddedEvents);
     }
-
 
     function saveEvents() {
         localStorage.setItem('calendarEvents2025', JSON.stringify(events));
@@ -181,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const formattedDate = eventDateObj.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' });
                 
                 listItem.innerHTML = `<span class="event-date-reminder">${formattedDate}:</span> ${event.description}`;
-                listItem.classList.add(event.type || 'special');
+                listItem.classList.add(event.type === 'default' ? 'user-event' : (event.type || 'special'));
                 upcomingEventListElement.appendChild(listItem);
             });
         } else {
@@ -199,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const firstDayOfMonth = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         const todayDate = new Date();
-        todayDate.setHours(0,0,0,0); // Para comparação precisa com cellDate
+        todayDate.setHours(0,0,0,0);
 
         for (let i = 0; i < firstDayOfMonth; i++) {
             const emptyCell = document.createElement('div');
@@ -218,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const cellDateStr = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
             dayCell.dataset.date = cellDateStr;
 
-            const cellDate = new Date(cellDateStr + "T00:00:00"); // Comparar com todayDate
+            const cellDate = new Date(cellDateStr + "T00:00:00");
             if (cellDate.getTime() === todayDate.getTime()) {
                 dayCell.classList.add('today');
             }
@@ -228,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 let primaryType = 'special'; 
                 const typePriority = ['holiday', 'recess', 'pedagogical', 'vacation', 'user-event', 'special'];
                 for (const type of typePriority) {
-                    if (dayEvents.some(e => e.type === type || (e.type === 'default' && type === 'user-event') )) { // 'default' de usuário vira 'user-event'
+                    if (dayEvents.some(e => e.type === type || (e.type === 'default' && type === 'user-event') )) {
                         primaryType = type;
                         break;
                     }
@@ -247,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function() {
             dayCell.addEventListener('click', () => handleDayClick(dayCell, cellDateStr));
             calendarDaysElement.appendChild(dayCell);
         }
-        displayUpcomingEvents(); // Atualiza a lista de próximos eventos sempre que o calendário é renderizado
+        displayUpcomingEvents();
     }
 
     function handleDayClick(dayCell, dateStr) {
@@ -259,8 +258,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const formattedDate = new Date(dateStr + 'T00:00:00').toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit', year: 'numeric'});
         selectedDateDisplayElement.textContent = formattedDate;
-        eventDateInput.value = dateStr; 
-        resetEditMode(); 
+        
+        resetEditMode(); // Reseta o formulário antes de preencher a data
+        eventDateInput.value = dateStr; // Agora preenche a data após o reset
 
         const dayEvents = events.filter(event => event.date === dateStr);
         eventListElement.innerHTML = '';
@@ -269,7 +269,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const listItem = document.createElement('li');
                 
                 const eventTextSpan = document.createElement('span');
-                eventTextSpan.textContent = `${event.description} (${event.type === 'default' ? 'Padrão (Letivo)' : (event.type || 'Letivo')})`;
+                const displayType = event.type === 'user-event' ? 'Padrão (Letivo)' : (event.type || 'Letivo');
+                eventTextSpan.textContent = `${event.description} (${displayType})`;
                 eventTextSpan.classList.add(event.type === 'default' ? 'user-event' : (event.type || 'special'));
                 listItem.appendChild(eventTextSpan);
 
@@ -305,7 +306,8 @@ document.addEventListener('DOMContentLoaded', function() {
             eventDateInput.value = eventToEdit.date;
             eventDateInput.disabled = true; 
             eventDescriptionInput.value = eventToEdit.description;
-            eventTypeInput.value = eventToEdit.type || 'default';
+            // Se o tipo armazenado for 'user-event', no select mostramos como 'default'
+            eventTypeInput.value = eventToEdit.type === 'user-event' ? 'default' : (eventToEdit.type || 'default');
             addEventButton.textContent = 'Salvar Alterações';
             eventDescriptionInput.focus();
         }
@@ -314,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function resetEditMode() {
         editingEventId = null;
         eventDateInput.disabled = false;
-        // Não limpar eventDateInput.value aqui, pois pode ser o dia selecionado
+        // Não limpar eventDateInput.value aqui, pois handleDayClick o preencherá
         eventDescriptionInput.value = '';
         eventTypeInput.value = 'default';
         addEventButton.textContent = 'Adicionar Evento';
@@ -328,9 +330,8 @@ document.addEventListener('DOMContentLoaded', function() {
             renderCalendar();
             
             if (selectedDayCell && selectedDayCell.dataset.date === dateOfDeletedEvent) {
-                handleDayClick(selectedDayCell, dateOfDeletedEvent); // Atualiza a lista do dia selecionado
+                handleDayClick(selectedDayCell, dateOfDeletedEvent);
             } else if (selectedDayCell) {
-                 // Se o dia selecionado não for o do evento deletado, apenas atualize a lista do dia selecionado
                 handleDayClick(selectedDayCell, selectedDayCell.dataset.date);
             }
             resetEditMode(); 
@@ -340,34 +341,27 @@ document.addEventListener('DOMContentLoaded', function() {
     addEventButton.addEventListener('click', () => {
         const date = eventDateInput.value;
         const description = eventDescriptionInput.value.trim();
-        let type = eventTypeInput.value; // Use let para poder modificar
+        let typeFromSelect = eventTypeInput.value;
+        let actualEventType = typeFromSelect === 'default' ? 'user-event' : typeFromSelect;
 
-        if (!date && !editingEventId) { // Se não estiver editando, a data é obrigatória
-            alert('Por favor, selecione uma data para o novo evento.');
+        // VALIDAÇÃO AJUSTADA
+        if (!editingEventId && !date) { 
+            alert('Por favor, selecione uma data no calendário para o novo evento.');
+            eventDateInput.focus(); // Foca no campo de data
             return;
         }
         if (!description) {
             alert('Por favor, preencha a descrição do evento.');
+            eventDescriptionInput.focus(); // Foca no campo de descrição
             return;
         }
         
-        // Se o tipo for 'default', internamente tratamos como 'user-event' para fins de estilo,
-        // mas no select e na lógica de armazenamento pode continuar 'default' ou 'user-event'
-        // A classe CSS .user-event será aplicada se o tipo for 'user-event' ou 'default' (adicionado pelo usuário).
-        // Para consistência, vamos salvar como 'user-event' se for 'default'.
-        if (type === 'default') {
-            type = 'user-event';
-        }
-
-
         if (editingEventId) {
             const eventIndex = events.findIndex(event => event.id === editingEventId);
             if (eventIndex > -1) {
-                // A data não é alterada na edição (campo desabilitado)
-                // Mas precisamos da data original do evento para atualizar a lista correta
                 const originalDate = events[eventIndex].date;
                 events[eventIndex].description = description;
-                events[eventIndex].type = type;
+                events[eventIndex].type = actualEventType;
                 
                 saveEvents();
                 renderCalendar();
@@ -380,7 +374,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
                 date,
                 description,
-                type
+                type: actualEventType
             };
             events.push(newEvent);
             saveEvents();
@@ -390,12 +384,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
+        const previouslySelectedDate = selectedDayCell ? selectedDayCell.dataset.date : '';
         resetEditMode(); 
-        // Após adicionar/salvar, se um dia estiver selecionado, mantenha a data no formulário
-        if(selectedDayCell) {
-            eventDateInput.value = selectedDayCell.dataset.date;
+        
+        if(previouslySelectedDate) {
+            eventDateInput.value = previouslySelectedDate;
         } else {
-            eventDateInput.value = ''; // Se nenhum dia selecionado, limpa a data
+            eventDateInput.value = ''; 
         }
     });
 
@@ -421,8 +416,8 @@ document.addEventListener('DOMContentLoaded', function() {
         selectedDateDisplayElement.textContent = '-';
         eventListElement.innerHTML = '<li>Nenhum evento para este dia.</li>';
         resetEditMode();
-        eventDateInput.value = '';
+        eventDateInput.value = ''; // Limpa o campo de data aqui, pois o contexto do dia foi perdido
     }
 
-    renderCalendar(); // Chamada inicial para renderizar o calendário e os próximos eventos
+    renderCalendar();
 });
