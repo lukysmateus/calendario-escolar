@@ -234,3 +234,38 @@ h1, h2, h3 {
     background-color: #e9ecef;
     cursor: not-allowed;
 }
+/* Estilos para a seção de Próximos Eventos */
+.upcoming-events-section {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f0f8ff; /* AliceBlue, para destacar */
+    border-radius: 5px;
+    border: 1px solid #d1e7fd;
+}
+
+.upcoming-events-section h3 {
+    margin-top: 0;
+    color: #0056b3;
+}
+
+#upcomingEventList {
+    list-style: none;
+    padding: 0;
+    max-height: 200px; /* Limita a altura e adiciona scroll se necessário */
+    overflow-y: auto;
+}
+
+#upcomingEventList li {
+    padding: 8px;
+    border-bottom: 1px dashed #bde0fe;
+    font-size: 0.9em;
+}
+
+#upcomingEventList li:last-child {
+    border-bottom: none;
+}
+
+#upcomingEventList .event-date-reminder {
+    font-weight: bold;
+    color: #004085;
+}
