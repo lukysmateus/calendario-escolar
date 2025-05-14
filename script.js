@@ -180,7 +180,79 @@ document.addEventListener('DOMContentLoaded', function() {
     function saveEvents() {
         localStorage.setItem('calendarEvents2025', JSON.stringify(events));
     }
+    // ... (todo o código JavaScript anterior até a função renderCalendar) ...
+
+    const upcomingEventListElement = document.getElementById('upcomingEventList'); // NOVO: Referência à lista de próximos eventos
+
+    // NOVO: Função para exibir os próximos eventos
+    function displayUpcomingEvents() {
+        upcomingEventListElement.innerHTML = ''; // Limpa a lista anterior
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Normaliza para o início do dia
+
+        const sevenDaysLater = new Date(today);
+        sevenDaysLater.setDate(today.getDate() + 7); // Define a data limite (7 dias à frente)
+
+        const upcoming = events.filter(event => {
+            const eventDate = new Date(event.date + "T00:00:00"); // Adiciona T00:00:00 para evitar problemas de fuso horário na conversão
+            return eventDate >= today && eventDate < sevenDaysLater;
+        }).sort((a, b) => new Date(a.date) - new Date(b.date)); // Ordena por data
+
+        if (upcoming.length > 0) {
+            upcoming.forEach(event => {
+                const listItem = document.createElement('li');
+                const eventDateObj = new Date(event.date + "T00:00:00");
+                const formattedDate = eventDateObj.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' });
+                
+                listItem.innerHTML = `<span class="event-date-reminder">${formattedDate}:</span> ${event.description}`;
+                listItem.classList.add(event.type || 'special'); // Adiciona a classe do tipo de evento para possível estilização
+                upcomingEventListElement.appendChild(listItem);
+            });
+        } else {
+            upcomingEventListElement.innerHTML = '<li>Nenhum evento programado para os próximos 7 dias.</li>';
+        }
+    }
+
+    // Modifique as chamadas existentes para também atualizar os próximos eventos
     
+    function saveEvents() {
+        localStorage.setItem('calendarEvents2025', JSON.stringify(events));
+        displayUpcomingEvents(); // NOVO: Atualiza os próximos eventos ao salvar
+    }
+    
+    function renderCalendar() {
+        // ... (código existente da renderCalendar) ...
+        // Ao final da renderCalendar, antes de fechar a função:
+        displayUpcomingEvents(); // NOVO: Atualiza os próximos eventos ao renderizar o calendário
+    }
+
+    // Na função deleteEventItem, após saveEvents():
+    function deleteEventItem(eventId) {
+        if (confirm('Tem certeza que deseja excluir este evento?')) {
+            events = events.filter(event => event.id !== eventId);
+            saveEvents(); // Isso já chamará displayUpcomingEvents()
+            renderCalendar(); // Isso também chamará displayUpcomingEvents()
+            if (selectedDayCell) {
+                handleDayClick(selectedDayCell, selectedDayCell.dataset.date);
+            }
+            resetEditMode();
+        }
+    }
+
+    // No listener do addEventButton, após saveEvents():
+    addEventButton.addEventListener('click', () => {
+        // ... (código existente) ...
+        
+        saveEvents(); // Isso já chamará displayUpcomingEvents()
+        renderCalendar(); // Isso também chamará displayUpcomingEvents()
+        
+        // ... (restante do código) ...
+    });
+
+    // Certifique-se de que a chamada inicial também aconteça
+    // renderCalendar(); // Já existe no final do script, e ele chama displayUpcomingEvents()
+
+// ... (todo o restante do seu script.js) ...
     function renderCalendar() {
         calendarDaysElement.innerHTML = '';
         const month = currentDate.getMonth();
