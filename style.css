@@ -2,7 +2,7 @@ body {
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Align to top */
+    align-items: flex-start;
     min-height: 100vh;
     background-color: #f4f4f4;
     margin: 0;
@@ -16,7 +16,7 @@ body {
     border-radius: 8px;
     box-shadow: 0 0 15px rgba(0,0,0,0.1);
     width: 100%;
-    max-width: 900px; /* Adjust as needed */
+    max-width: 900px;
 }
 
 h1, h2, h3 {
@@ -48,17 +48,17 @@ h1, h2, h3 {
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 5px; /* Gap between cells */
+    gap: 5px;
 }
 
 .day-name, .day-cell {
-    padding: 10px 5px; /* Reduced padding for smaller cells */
+    padding: 10px 5px;
     text-align: center;
     border: 1px solid #ddd;
-    min-height: 70px; /* Ensure cells have some height */
-    font-size: 0.8em; /* Smaller font for day numbers */
+    min-height: 70px;
+    font-size: 0.8em;
     position: relative;
-    overflow: hidden; /* Hide overflowing event text */
+    overflow: hidden;
 }
 
 .day-name {
@@ -68,7 +68,7 @@ h1, h2, h3 {
 
 .day-cell {
     cursor: pointer;
-    background-color: #fff; /* Default for Dias Letivos */
+    background-color: #fff;
     transition: background-color 0.3s;
 }
 
@@ -92,38 +92,40 @@ h1, h2, h3 {
     padding: 1px 3px;
     border-radius: 3px;
     margin-top: 2px;
-    display: block; /* Make markers take full width for stacking */
+    display: block;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* Add ... if text is too long */
+    text-overflow: ellipsis;
 }
 
-
-/* Event Type Colors from Legend */
 .day-cell.holiday, .event-marker.holiday {
-    background-color: #ffcccc; /* Light Red */
+    background-color: #ffcccc;
     color: #a30000;
 }
 .day-cell.recess, .event-marker.recess {
-    background-color: #e6ccff; /* Light Purple */
+    background-color: #e6ccff;
     color: #5c0099;
 }
 .day-cell.pedagogical, .event-marker.pedagogical {
-    background-color: #ccffcc; /* Light Green */
+    background-color: #ccffcc;
     color: #006400;
 }
 .day-cell.vacation, .event-marker.vacation {
-    background-color: #ffffcc; /* Light Yellow */
+    background-color: #ffffcc;
     color: #666600;
 }
-.day-cell.special, .event-marker.special {
-    background-color: #cce7ff; /* Light Blue for other special events */
+.day-cell.special, .event-marker.special { /* Para eventos 'special' e 'default' quando não são user-event */
+    background-color: #cce7ff; 
     color: #004080;
 }
-.day-cell.user-event, .event-marker.user-event {
+.day-cell.user-event, .event-marker.user-event { /* Para eventos adicionados pelo usuário com tipo 'default' */
     background-color: #d1ecf1;
     color: #0c5460;
-    border-left: 3px solid #0c5460;
+    border-left: 3px solid #0c5460; /* Para destacar um pouco */
+}
+/* Se a célula do dia tiver um evento user-event como primário */
+.day-cell.user-event {
+    background-color: #d1ecf1; /* Cor de fundo da célula */
 }
 
 
@@ -163,9 +165,42 @@ h1, h2, h3 {
 #eventList li {
     padding: 8px;
     border-bottom: 1px dashed #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
 }
 #eventList li:last-child {
     border-bottom: none;
+}
+
+#eventList li > span {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+#eventList .event-actions button {
+    margin-left: 5px;
+    padding: 4px 8px;
+    font-size: 0.8em;
+    cursor: pointer;
+    border: none;
+    border-radius: 3px;
+}
+
+.edit-btn {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+#eventDate:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
 }
 
 .add-event-section label {
@@ -197,48 +232,12 @@ h1, h2, h3 {
 .add-event-section button:hover {
     background-color: #218838;
 }
-/* Estilos para os botões de editar/excluir na lista de eventos */
-#eventList li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap; /* Permite que os botões quebrem a linha em telas menores */
-}
 
-#eventList li > span { /* O texto do evento */
-    flex-grow: 1; /* Faz o texto ocupar o espaço disponível */
-    margin-right: 10px; /* Espaço antes dos botões */
-}
-
-#eventList .event-actions button {
-    margin-left: 5px;
-    padding: 4px 8px;
-    font-size: 0.8em;
-    cursor: pointer;
-    border: none;
-    border-radius: 3px;
-}
-
-.edit-btn {
-    background-color: #ffc107; /* Amarelo */
-    color: #212529;
-}
-
-.delete-btn {
-    background-color: #dc3545; /* Vermelho */
-    color: white;
-}
-
-/* Estilo para quando o campo de data está desabilitado durante a edição */
-#eventDate:disabled {
-    background-color: #e9ecef;
-    cursor: not-allowed;
-}
 /* Estilos para a seção de Próximos Eventos */
 .upcoming-events-section {
     margin-top: 20px;
     padding: 15px;
-    background-color: #f0f8ff; /* AliceBlue, para destacar */
+    background-color: #f0f8ff;
     border-radius: 5px;
     border: 1px solid #d1e7fd;
 }
@@ -251,7 +250,7 @@ h1, h2, h3 {
 #upcomingEventList {
     list-style: none;
     padding: 0;
-    max-height: 200px; /* Limita a altura e adiciona scroll se necessário */
+    max-height: 200px;
     overflow-y: auto;
 }
 
